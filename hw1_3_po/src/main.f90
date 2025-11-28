@@ -1,4 +1,4 @@
-program lab_1_3_opt
+program lab_1_3_po
 
    use Environment
    use Config
@@ -24,4 +24,4 @@ program lab_1_3_opt
    call write_student_by_index(OUT_FILE, Group(younger), &
                                "Cамый молодой в списке:")
 
-end program lab_1_3_opt
+end program lab_1_3_po

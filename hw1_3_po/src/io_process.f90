@@ -32,8 +32,6 @@ contains
 
       type(student)            :: Stud
       integer                  :: In, Out, IO, i, Stud_Amount
-      
-      type(student_na)         :: Stud_NA
 
       Stud_Amount = count_of_students(Input_File)
 
@@ -43,10 +41,11 @@ contains
               newunit=Out, access='direct', recl=RECL)
 
             do i = 1, Stud_Amount
-               read  (In, S_FORMAT, iostat=IO) Stud_NA
-               Stud%Surname = Stud_NA%Surname
-               Stud%Initials = Stud_NA%Initials 
-               Stud%Year = Stud_NA%Year
+               Stud%Surname  = '                ' 
+               Stud%Initials = '        '
+               read  (In, S_FORMAT, iostat=IO) Stud%Surname(1:FILE_SURNAME_LEN),   &
+                                               Stud%Initials(1:FILE_INITIALS_LEN), & 
+                                               Stud%Year
                write (Out, iostat=IO, rec=i)   Stud
             end do
 
@@ -82,15 +81,12 @@ contains
             
       integer                   :: Out, IO, i
 
-      type(student_na)          :: Stud_NA            
-
       open  (file=Output_File, encoding=E_, newunit=Out)
       write (Out, '(/a)') Message   
          do i = 1, size(Group)
-            Stud_NA%Surname  = Group(i)%Surname(1:FILE_SURNAME_LEN)
-            Stud_NA%Initials = Group(i)%Initials(1:FILE_INITIALS_LEN)
-            Stud_NA%Year     = Group(i)%Year
-            write(Out, S_FORMAT, iostat=IO) Stud_NA
+            write (Out, S_FORMAT, iostat=IO) Group(i)%Surname(1:FILE_SURNAME_LEN),   &
+                                             Group(i)%Initials(1:FILE_INITIALS_LEN), &
+                                             Group(i)%Year
          end do
       close (Out)
 
@@ -103,14 +99,12 @@ contains
       character(*),  intent(in) :: Output_File, Message
 
       integer                   :: Out, IO
-      type(student_na)          :: Stud_NA
 
       open (file=Output_File, encoding=E_, newunit=Out, position='append')
          write (Out, '(/a)') Message
-         Stud_NA%Surname  = Stud%Surname(1:FILE_SURNAME_LEN)
-         Stud_NA%Initials = Stud%Initials(1:FILE_INITIALS_LEN)
-         Stud_NA%Year     = Stud%Year
-         write(Out, S_FORMAT, iostat=IO) Stud_NA
+         write (Out, S_FORMAT, iostat=IO) Stud%Surname(1:FILE_SURNAME_LEN),   &
+                                          Stud%Initials(1:FILE_INITIALS_LEN), &
+                                          Stud%Year
       close (Out)
 
    end subroutine write_student_by_index 

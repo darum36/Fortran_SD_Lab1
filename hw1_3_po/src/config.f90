@@ -11,7 +11,7 @@ module Config
 
    character(*), parameter              :: S_FORMAT = '(2(a, 1x), i4)'
    
-   character(*), parameter              :: IN_FILE  = '../data/class.txt'
+   character(*), parameter              :: IN_FILE  = '../../class.txt'
    character(*), parameter              :: OUT_FILE = 'output.txt'
    character(*), parameter              :: DAT_FILE = 'class.dat'
 
@@ -20,12 +20,6 @@ module Config
       character(INITIALS_LEN, kind=CH_) :: Initials = ""
       integer(I_)                       :: Year = 0
    end type student
-
-   type student_na
-      character(FILE_SURNAME_LEN,  kind=CH_) :: Surname = ""
-      character(FILE_INITIALS_LEN, kind=CH_) :: Initials = ""
-      integer(I_)                            :: Year = 0
-   end type student_na
    
    integer, parameter                   :: RECL = & 
                                            (SURNAME_LEN + INITIALS_LEN)*CH_ + I_
