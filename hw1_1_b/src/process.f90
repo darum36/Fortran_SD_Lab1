@@ -2,7 +2,6 @@ module Process
 
    use Environment
    use Config
-   use omp_lib
 
    implicit none
 

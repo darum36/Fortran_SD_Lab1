@@ -1,4 +1,4 @@
-program lab_1_2a_po
+program lab_1_2a_b
 
    use Environment
    use Config
@@ -26,4 +26,4 @@ program lab_1_2a_po
    call write_student_by_index(OUT_FILE, Surnames, Initials, Year, &
                                youngest, "Cамый молодой в списке:")
 
-end program lab_1_2a_po 
+end program lab_1_2a_b 
