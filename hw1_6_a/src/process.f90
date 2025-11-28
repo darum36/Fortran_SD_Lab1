@@ -1,0 +1,62 @@
+module Process
+
+   use Environment
+   use Config
+   use IO_Process
+
+   implicit none
+
+contains
+
+      recursive function Find_First_Recursive(Current_First, Stud_To_Check) result(First)
+           
+         type(student), pointer, intent(in) :: Current_First, Stud_To_Check
+         
+         type(student), pointer             :: First
+        
+         if (Associated(Stud_To_Check)) then
+
+           call append_in_file(SUR_OUT_FILE)
+
+           if (Current_First%Surname > Stud_To_Check%Surname) then
+              First => Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
+           else if (Current_First%Surname == Stud_To_Check%Surname) then
+              if (Current_First%Initial > Stud_To_Check%Initial) then
+                  First => Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
+              else 
+                  First => Find_First_Recursive(Current_First, Stud_To_Check%next)
+              endif
+           else
+              First => Find_First_Recursive(Current_First, Stud_To_Check%next)
+           endif
+         else
+            First => Current_First 
+         endif
+        
+   end function Find_First_Recursive
+
+
+   !----------------------------------------------------------------------------!
+
+      recursive function Find_Youngest_Recursive(Current_Young, Stud_To_Check) result(Youngest)
+          
+         type(student), pointer, intent(in) :: Current_Young, Stud_To_Check
+         
+         type(student), pointer             :: Youngest
+        
+         if (Associated(Stud_To_Check)) then
+
+           call append_in_file(YEAR_OUT_FILE)
+
+           if (Current_Young%Year > Stud_To_Check%Year) then
+              Youngest => Find_Youngest_Recursive(Stud_To_Check, Stud_To_Check%next)
+           else 
+              Youngest => Find_Youngest_Recursive(Current_Young, Stud_To_Check%next)
+           endif
+         else
+              Youngest => Current_Young
+         endif
+  
+      end function Find_Youngest_Recursive
+
+end module Process   
