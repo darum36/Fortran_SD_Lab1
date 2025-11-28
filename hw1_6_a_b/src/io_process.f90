@@ -7,37 +7,12 @@ module IO_Process
 
 contains
 
-   subroutine append_in_file(file_t)
-      character(*), intent(in) :: file_t
-
-      Integer                  :: ROut
-      
-      open(file=file_t, encoding=E_, position='append', newunit=ROut)
-         write (ROut, *) "Still work"
-      close(ROut)
-
-   end subroutine append_in_file
-   
-   subroutine start_file(file_t)
-      character(*), intent(in) :: file_t
-
-      Integer                  :: ROut
-      
-      open(file=file_t, encoding=E_, position='rewind', newunit=ROut)
-         write (ROut, *) "= Start ="
-      close(ROut)
-
-   end subroutine start_file
-
-
    function Read_class(Input_File) result(Class_list)
       
       type(student), pointer   :: Class_list
       character(*), intent(in) :: Input_File
       
       Integer                  :: In
-
-      call start_file(READ_OUT_FILE)
 
       open (file=Input_File, encoding=E_, newunit=In)
          Class_list => Read_Student(In)
@@ -54,8 +29,6 @@ contains
             
             allocate (Stud)
                 
-            call append_in_file(READ_OUT_FILE)
-
             read (In, S_FORMAT, iostat=IO) &
                   Stud%Surname, Stud%Initial, Stud%Year
                if (IO == 0) then

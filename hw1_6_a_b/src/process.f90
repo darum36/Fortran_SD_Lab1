@@ -2,7 +2,6 @@ module Process
 
    use Environment
    use Config
-   use IO_Process
 
    implicit none
 
@@ -16,15 +15,12 @@ contains
         
          if (Associated(Stud_To_Check)) then
 
-           call append_in_file(SUR_OUT_FILE)
-
            if (Current_First%Surname > Stud_To_Check%Surname) then
               First => Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
+
            else if (Current_First%Surname == Stud_To_Check%Surname) then
               if (Current_First%Initial > Stud_To_Check%Initial) then
                   First => Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
-              else 
-                  First => Find_First_Recursive(Current_First, Stud_To_Check%next)
               endif
            else
               First => Find_First_Recursive(Current_First, Stud_To_Check%next)
@@ -45,8 +41,6 @@ contains
          type(student), pointer             :: Youngest
         
          if (Associated(Stud_To_Check)) then
-
-           call append_in_file(YEAR_OUT_FILE)
 
            if (Current_Young%Year > Stud_To_Check%Year) then
               Youngest => Find_Youngest_Recursive(Stud_To_Check, Stud_To_Check%next)

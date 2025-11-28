@@ -27,10 +27,13 @@ contains
 
    ! создание системного файла
    subroutine create_data_file(Input_File, Output_File)
-      character(*), intent(in) :: Input_File, Output_File
-      type(grp)                :: Group_t
-      integer                  :: In, Out, IO, i, Stud_Amount
+      character(*), intent(in)               :: Input_File, Output_File
+      type(grp)                              :: Group_t
+      integer                                :: In, Out, IO, i, Stud_Amount
 
+      character(FILE_SURNAME_LEN,  kind=CH_) :: Surname_t
+      character(FILE_INITIALS_LEN, kind=CH_) :: Initials_t
+     
       Stud_Amount = count_of_students(Input_File)
 
       allocate(Group_t%Surname(Stud_Amount), &
@@ -38,9 +41,12 @@ contains
                Group_t%Year(Stud_Amount))
 
       open(file=Input_File, encoding=E_, newunit=In) 
-         read (In, S_FORMAT, iostat=IO) &
-              (Group_t%Surname(i), Group_t%Initials(i), &
-               Group_t%Year(i), i = 1, Stud_Amount)
+         do i = 1, Stud_Amount
+            read(In, S_FORMAT, iostat=IO) &
+               Surname_t, Initials_t, Group_t%Year(i)
+               Group_t%Surname(i)  = Surname_t
+               Group_t%Initials(i) = Initials_t
+         end do
       close (In)
 
       open(file=Output_File, form='unformatted', &
@@ -63,6 +69,7 @@ contains
       integer                  :: In, IO, Stud_Amount
 
       Stud_Amount = count_of_students(IN_FILE)
+
       allocate(Group%Surname(Stud_Amount), &
                Group%Initials(Stud_Amount), &
                Group%Year(Stud_Amount))
@@ -78,16 +85,21 @@ contains
    ! запись исходной группы  
    subroutine write_student_list(Output_File, Group, Message)
 
-      type(grp),    intent(in) :: Group
-      character(*), intent(in) :: Output_File, Message
+      type(grp),    intent(in)               :: Group
+      character(*), intent(in)               :: Output_File, Message
             
-      integer                  :: Out, IO, i
+      integer                                :: Out, IO, i
 
+      character(FILE_SURNAME_LEN,  kind=CH_) :: Surname_t
+      character(FILE_INITIALS_LEN, kind=CH_) :: Initials_t
+      
       open  (file=Output_File, encoding=E_, newunit=Out)
          write (Out, '(/a)') Message   
          do i = 1, size(Group%Year)
-            write (Out, S_FORMAT, iostat=IO) Group%Surname(i),  &
-                                             Group%Initials(i), &
+            Surname_t = transfer(Group%Surname(i), Surname_t)
+            Initials_t = transfer(Group%Initials(i), Initials_t)  
+            write (Out, S_FORMAT, iostat=IO) Surname_t,  &
+                                             Initials_t, &
                                              Group%Year(i)
          end do
       close (Out)
@@ -103,10 +115,15 @@ contains
 
       integer                   :: Out, IO
 
+      character(FILE_SURNAME_LEN,  kind=CH_) :: Surname_t
+      character(FILE_INITIALS_LEN, kind=CH_) :: Initials_t
+      
       open (file=Output_File, encoding=E_, newunit=Out, position='append')
          write (Out, '(/a)') Message
-         write (Out, S_FORMAT, iostat=IO) Group%Surname(Stud_ind),  &
-                                          Group%Initials(Stud_ind), &
+         Surname_t = transfer(Group%Surname(Stud_ind), Surname_t)
+         Initials_t = transfer(Group%Initials(Stud_ind), Initials_t)  
+         write (Out, S_FORMAT, iostat=IO) Surname_t,  &
+                                          Initials_t, &
                                           Group%Year(Stud_ind)
       close (Out)
 

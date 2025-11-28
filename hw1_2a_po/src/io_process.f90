@@ -34,49 +34,69 @@ contains
       
       integer                                       :: In, IO, i, Stud_Amount
 
-      Stud_Amount = count_of_students(IN_FILE)
+      character(FILE_SURNAME_LEN, kind=CH_)         :: Sur_na
+      character(FILE_INITIALS_LEN, kind=CH_)        :: Ini_na
+
+      Stud_Amount = count_of_students(Input_File)
       allocate (Surnames(SURNAME_LEN,  Stud_Amount), &
                 Initials(INITIALS_LEN, Stud_Amount), &
                 Year(Stud_Amount))
 
       open (file=Input_File, encoding=E_, newunit=In)
-         read (In, S_FORMAT, iostat=IO) (Surnames(:,i), Initials(:,i), Year(i), &
-                                         i = 1, Stud_Amount)
+         do i = 1, Stud_Amount
+            read (In, S_FORMAT, iostat=IO) Sur_na, Ini_na, Year(i)
+            Surnames(:, i) = Transfer(Sur_na, Surnames(:, i))
+            Initials(:, i) = Transfer(Ini_na, Initials(:, i))
+         end do
       close (In)
   
    end subroutine read_students_list
   
    subroutine write_student_list(Output_File, Surnames, Initials, Year, Message)
 
-      character(*),        intent(in) :: Output_File, Message
-      character(kind=CH_), intent(in) :: Surnames(:,:)
-      character(kind=CH_), intent(in) :: Initials(:,:)
-      integer,             intent(in) :: Year(:)
+      character(*),        intent(in)        :: Output_File, Message
+      character(kind=CH_), intent(in)        :: Surnames(:,:)
+      character(kind=CH_), intent(in)        :: Initials(:,:)
+      integer,             intent(in)        :: Year(:)
 
-      integer                         :: Out, IO, i
+      integer                                :: Out, IO, i
 
-      open (file=Output_File, encoding=E_, newunit=Out)
-         write (Out, '(/a)') Message   
-         write (Out, S_FORMAT, iostat=IO) (Surnames(:,i), Initials(:,i), Year(i), &
-                                           i = 1, size(Surnames, dim=2))
+      character(FILE_SURNAME_LEN, kind=CH_)  :: Surname_t
+      character(FILE_INITIALS_LEN, kind=CH_) :: Initials_t
+
+      open(file=Output_File, encoding=E_, newunit=Out)
+         write(Out, '(/a)') Message
+         do i = 1, size(Year)
+            Surname_t  = Transfer(Surnames(1:FILE_SURNAME_LEN, i),  Surname_t)
+            Initials_t = Transfer(Initials(1:FILE_INITIALS_LEN, i), Initials_t)
+            write(Out, S_FORMAT, iostat=IO) &
+                  Surname_t, & 
+                  Initials_t, &
+                  Year(i)
+         end do
       close (Out)
 
    end subroutine write_student_list
 
    subroutine write_student_by_index(Output_File, Surnames, Initials, Year, Stud_ind, Message)
 
-      character(*),        intent(in) :: Output_File, Message 
-      character(kind=CH_), intent(in) :: Surnames(:,:)
-      character(kind=CH_), intent(in) :: Initials(:,:)
-      integer,             intent(in) :: Year(:)
-      integer,             intent(in) :: Stud_ind
+      character(*),        intent(in)        :: Output_File, Message 
+      character(kind=CH_), intent(in)        :: Surnames(:,:)
+      character(kind=CH_), intent(in)        :: Initials(:,:)
+      integer,             intent(in)        :: Year(:)
+      integer,             intent(in)        :: Stud_ind
       
-      integer                         :: Out, IO
+      integer                                :: Out, IO
 
-      open (file=Output_File, encoding=E_, newunit=Out, position='append')
-      write (Out, '(/a)') Message   
-      write (Out, S_FORMAT, iostat=IO) Surnames(:, Stud_ind), Initials(:, Stud_ind), &
-                                     Year(Stud_ind)
+      character(FILE_SURNAME_LEN, kind=CH_)  :: Surname_t
+      character(FILE_INITIALS_LEN, kind=CH_) :: Initials_t
+
+      open(file=Output_File, encoding=E_, newunit=Out, position='append')
+         write(Out, '(/a)') Message
+         Surname_t  = Transfer(Surnames(:, Stud_ind), Surname_t)
+         Initials_t = Transfer(Initials(:, Stud_ind), Initials_t)
+         write(Out, S_FORMAT, iostat=IO) &
+               Surname_t, Initials_t, Year(Stud_ind) 
       close (Out)
 
    end subroutine write_student_by_index

@@ -10,10 +10,12 @@ contains
 
    function find_first_by_alphabet(Surnames, Initials) result(first_ind)
       
-      character(SURNAME_LEN, kind=CH_), allocatable, intent(in)  :: Surnames(:)
-      character(INITIALS_LEN, kind=CH_),allocatable, intent(in) :: Initials(:)
+      character(SURNAME_LEN, kind=CH_), intent(in)  :: Surnames(:)
+      character(INITIALS_LEN, kind=CH_), intent(in) :: Initials(:)
    
       integer                                       :: first_ind
+    
+      logical, allocatable                          :: Duplicate_mask(:)
     
       integer                                       :: i, id, n, loc_min, &
                                                        num_threads, Rind, Lind, &
@@ -29,7 +31,7 @@ contains
       !$OMP SHARED(first_ind, Surnames, Initials, n, data_delimeter, num_threads)
           
          id = omp_get_thread_num()
-         if (id == (num_threads - 1)) then
+         if (id == num_threads) then
             Rind = n
          else
             Rind = data_delimeter * (id + 1)
@@ -38,8 +40,10 @@ contains
          Lind = data_delimeter * id + 1
 
          loc_min = Lind
+         
+         print *, "Запустился поток для фамилий:", id, "L:", Lind, "R:", Rind
           
-         !$OMP SIMD aligned(Surnames, Initials :64) 
+         !$OMP DO
          do i = Lind + 1, Rind
             if (Surnames(i) < Surnames(loc_min)) then
                loc_min = i
@@ -49,14 +53,14 @@ contains
                endif
             endif
          end do
-         !$OMP END SIMD
+         !$OMP END DO
 
          !$OMP CRITICAL
             if (Surnames(loc_min) < Surnames(first_ind)) then
                first_ind = loc_min 
             else if (Surnames(loc_min) == Surnames(first_ind)) then
                if (Initials(loc_min) < Initials(first_ind)) then
-                  first_ind = loc_min
+                  first_ind = i
                endif
             endif
          !$OMP END CRITICAL
@@ -67,7 +71,7 @@ contains
 
    function find_younger(Year) result(younger_ind)
 
-      integer, intent(in), allocatable :: Year(:)
+      integer, intent(in) :: Year(:)
       integer             :: younger_ind
 
       ! раньше было так:
@@ -88,7 +92,7 @@ contains
       !$OMP shared(Year, n, younger_ind, data_delimeter)
          
          id = omp_get_thread_num()
-         if (id == (num_threads - 1)) then
+         if (id == num_threads) then
             Rind = n
          else
             Rind = data_delimeter * (id + 1)
@@ -97,12 +101,15 @@ contains
          Lind = data_delimeter * id + 1
 
          i_min = Lind
+         print * , "Запустился поток для года:", id, "L:", Lind, "R:", Rind
          
-         !$OMP SIMD aligned(Year :64)
+         !$OMP DO
          do i = Lind+1, Rind
-            if (Year(i) < Year(i_min)) i_min = i
+            if (Year(i) < Year(i_min)) then
+               i_min = i
+            end if
          end do
-         !$OMP END SIMD
+         !$OMP END DO
 
          !$OMP critical
             if (Year(i_min) < Year(younger_ind)) then

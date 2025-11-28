@@ -3,10 +3,14 @@ module Config
 
    implicit none
 
-   integer, parameter                             :: SURNAME_LEN = 15
-   integer, parameter                             :: INITIALS_LEN = 5
+   integer, parameter                             :: SURNAME_LEN = 16
+   integer, parameter                             :: INITIALS_LEN = 8
 
-   character(*), parameter :: S_FORMAT = '(15a1, 1x, 5a1, 1x, i4)'
+   integer, parameter                             :: FILE_SURNAME_LEN = 15
+   integer, parameter                             :: FILE_INITIALS_LEN = 5
+  
+
+   character(*), parameter :: S_FORMAT = '(2(a, 1x), i4)'
    character(*), parameter :: IN_FILE  = '../data/class.txt'
    character(*), parameter :: OUT_FILE = 'output.txt'
 

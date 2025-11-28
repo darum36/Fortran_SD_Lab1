@@ -17,12 +17,10 @@ program hw1_6_a_opt
 
       call Write_Class(OUT_FILE, Group, "Исходный список:")
 
-      call start_file(SUR_OUT_FILE)
       FBA => Find_First_Recursive(Group, Group%next)
       call Write_Student(OUT_FILE, FBA, &
                           "Первый по алфавиту в списке:")
       
-      call start_file(YEAR_OUT_FILE)                 
       Young => Find_Youngest_Recursive(Group, Group%next) 
       call Write_Student(OUT_FILE, Young, &
                          "Cамый молодой в списке:")

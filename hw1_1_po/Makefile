@@ -1,6 +1,6 @@
 FC=gfortran
 FFLAGS=-Wall -std=f2018 -fimplicit-none -Wno-maybe-uninitialized -Wno-unused-function -static-libgfortran -flto
-FOPT=-O3 -ftree-vectorize -fopt-info-vec -fopenmp -fno-align-commons -fcheck=all 
+FOPT=-O3 -ftree-vectorize -fopt-info-vec -fopenmp
 
 all:          
 	$(FC) $(FFLAGS) $(FOPT) -c src/environment.f90 -J obj/ -o obj/environment.o

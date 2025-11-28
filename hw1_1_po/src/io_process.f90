@@ -23,30 +23,34 @@ contains
          end do
       close (In)
       
+      print *, "Students_num:", n_stud 
+
    end function count_of_students
 
    subroutine read_students_list (Input_File, Surnames, Initials, Year)
 
       character(*),                                   intent(in)  :: Input_File 
-      !DIR$ ATTRIBUTES ALIGN : 64 :: Surnames
       character(SURNAME_LEN,  kind=CH_), allocatable, intent(out) :: Surnames(:)
-      !DIR$ ATTRIBUTES ALIGN : 64 :: Initials 
       character(INITIALS_LEN, kind=CH_), allocatable, intent(out) :: Initials(:)
-      !DIR$ ATTRIBUTES ALIGN : 64 :: Year
       integer,                           allocatable, intent(out) :: Year(:)
       
       integer                                                     :: In, IO, i, Stud_Amount
 
-      integer, parameter :: align_bytes = 64
+      character(FILE_SURNAME_LEN, kind=CH_)                       :: Surname_non_al
+      character(FILE_INITIALS_LEN, kind=CH_)                      :: Initials_non_al
+
       Stud_Amount = count_of_students(Input_File)
 
-      allocate (Surnames(Stud_Amount))
-      allocate (Initials(Stud_Amount))
-      allocate (Year(Stud_Amount))
+      allocate (Surnames(Stud_Amount), &
+                Initials(Stud_Amount), &
+                Year(Stud_Amount))
 
       open (file=Input_File, encoding=E_, newunit=In)
-         read (In, S_FORMAT, iostat=IO) (Surnames(i), Initials(i), Year(i), &
-                                                        i = 1, Stud_Amount)
+         do i = 1, Stud_Amount
+            read (In, S_FORMAT, iostat=IO) Surname_non_al, Initials_non_al, Year(i)
+            Surnames(i) = Surname_non_al
+            Initials(i) = Initials_non_al
+         end do
       close (In)
   
    end subroutine read_students_list
@@ -62,8 +66,11 @@ contains
 
       open  (file=Output_File, encoding=E_, newunit=Out)
          write (Out, '(/a)') Message   
-         write (Out, S_FORMAT, iostat=IO) (Surnames(i), Initials(i), Year(i), &
-                                                           i = 1, size(Year))
+         write (Out, S_FORMAT, iostat=IO) &
+               (Surnames(i)(1:FILE_SURNAME_LEN), &
+                Initials(i)(1:FILE_INITIALS_LEN), &
+                Year(i), &
+                i = 1, size(Year))
       close (Out)
 
    end subroutine write_student_list
@@ -80,8 +87,10 @@ contains
 
       open (file=Output_File, encoding=E_, newunit=Out, position='append')
          write (Out, '(/a)') Message  
-         write (Out, S_FORMAT, iostat=IO) Surnames(Stud_ind), Initials(Stud_ind), &
-                                                                  Year(Stud_ind)
+         write (Out, S_FORMAT, iostat=IO) &
+               Surnames(Stud_ind)(1:FILE_SURNAME_LEN), &
+               Initials(Stud_ind)(1:FILE_INITIALS_LEN), &
+               Year(Stud_ind)
       close (Out)
 
    end subroutine write_student_by_index

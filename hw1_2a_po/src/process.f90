@@ -78,7 +78,9 @@ contains
    
          !allocate(Comp_Mask(size(First_Name)))
          
-         Comp_Mask = (First_Name /= Second_Name)
+         !$OMP PARALLEL WORKSHARE
+            Comp_Mask = (First_Name /= Second_Name)
+         !$OMP END PARALLEL WORKSHARE
          
          first_diff = FindLoc(Comp_Mask, .true., dim=1)
          compare = 2
