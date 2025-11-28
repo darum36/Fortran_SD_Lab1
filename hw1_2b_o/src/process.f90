@@ -10,14 +10,14 @@ contains
    
    function find_first_by_alphabet(Surnames, Initials) result(first_ind)
 
-      character(kind=CH_), intent(in), allocatable :: Surnames(:,:)
-      character(kind=CH_), intent(in), allocatable :: Initials(:,:)
+      character(kind=CH_), intent(in) :: Surnames(:,:)
+      character(kind=CH_), intent(in) :: Initials(:,:)
 
-      integer                                      :: first_ind
+      integer                         :: first_ind
    
-      integer                                      :: row, comp, Rind, Lind, &
-                                                      loc_min, id, data_delimeter, &
-                                                      num_threads, n
+      integer                         :: row, comp, Rind, Lind, &
+                                         loc_min, id, data_delimeter, &
+                                         num_threads, n
       first_ind = 1
       n = size(Surnames, dim=1)
 
@@ -38,7 +38,7 @@ contains
          Lind = data_delimeter * id + 1
          loc_min = Lind
 
-         !$OMP SIMD aligned(Surnames, Initials : 16)
+         !$OMP DO 
          do row = Lind + 1, Rind
             comp = compare_names(Surnames(loc_min, :), Surnames(row, :)) 
             if (comp == 1) then
@@ -50,7 +50,7 @@ contains
                endif
             endif
          end do
-         !$OMP END SIMD
+         !$OMP END DO
 
          !$OMP critical
          comp = compare_names(Surnames(first_ind, :), Surnames(loc_min, :)) 
@@ -96,12 +96,12 @@ contains
       
    function find_younger(Year) result(younger_ind)
 
-      integer, intent(in), allocatable :: Year(:)
-      integer                          :: younger_ind
+      integer, intent(in) :: Year(:)
+      integer             :: younger_ind
 
-      integer                          :: i, id, i_min, n, &
-                                          num_threads, Lind, Rind, &
-                                          data_delimeter
+      integer             :: i, id, i_min, n, &
+                             num_threads, Lind, Rind, &
+                             data_delimeter
 
       n = size(Year)
       younger_ind = 1
@@ -124,13 +124,13 @@ contains
 
          i_min = Lind
          
-         !$OMP SIMD aligned(Year : 16)
+         !$OMP DO
          do i = Lind+1, Rind
             if (Year(i) < Year(i_min)) then
                i_min = i
             end if
          end do
-         !$OMP END SIMD
+         !$OMP END DO
 
          !$OMP critical
             if (Year(i_min) < Year(younger_ind)) then

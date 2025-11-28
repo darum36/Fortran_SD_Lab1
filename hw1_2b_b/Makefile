@@ -1,6 +1,6 @@
 FC=gfortran
 FFLAGS=-Wall -std=f2018 -fimplicit-none -Wno-maybe-uninitialized -Wno-unused-function -static-libgfortran -flto
-FOPT=-O3 -ftree-vectorize -fopt-info-vec -fopenmp
+FOPT=-O3 -ftree-vectorize -fopt-info-vec
 
 # Папки для создания
 OBJ_DIR=obj

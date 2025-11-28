@@ -40,13 +40,9 @@ contains
       allocate (Initials(Stud_Amount, INITIALS_LEN))
       allocate (Year(Stud_Amount))
 
-      Surnames = ' '
-      Initials = ' '
-
       open (file=Input_File, encoding=E_, newunit=In)
          do i = 1, Stud_Amount
-            read (In, S_FORMAT, iostat=IO) Surnames(i, 1:FILE_SURNAME_LEN),  &
-                                           Initials(i, 1:FILE_INITIALS_LEN), &
+            read (In, S_FORMAT, iostat=IO) Surnames(i, :), Initials(i, :), &
                                            Year(i)
          end do
       close (In)
@@ -65,8 +61,7 @@ contains
       open(file=Output_File, encoding=E_, newunit=Out)
          write(Out, '(/a)') Message
          do i = 1, size(Year)
-            write(Out, S_FORMAT, iostat=IO) Surnames(i, 1:FILE_SURNAME_LEN),  & 
-                                            Initials(i, 1:FILE_INITIALS_LEN), &
+            write(Out, S_FORMAT, iostat=IO) Surnames(i, :), Initials(i, :), &
                                             Year(i)
          end do
       close (Out)
@@ -85,8 +80,7 @@ contains
 
       open(file=Output_File, encoding=E_, newunit=Out, position='append')
          write(Out, '(/a)') Message
-         write(Out, S_FORMAT, iostat=IO) Surnames(Stud_ind, 1:FILE_SURNAME_LEN),  & 
-                                         Initials(Stud_ind, 1:FILE_INITIALS_LEN), &
+         write(Out, S_FORMAT, iostat=IO) Surnames(Stud_ind, :), Initials(Stud_ind, :), &
                                          Year(Stud_ind)
       close (Out)
 
