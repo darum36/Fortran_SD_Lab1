@@ -37,21 +37,14 @@ contains
       
       integer                                                     :: In, IO, i, Stud_Amount
 
-      character(SURNAME_LEN,  kind=CH_)                           :: blank_surname
-      character(INITIALS_LEN, kind=CH_)                           :: blank_inititals
-      
-      blank_surname   = Repeat(' ', SURNAME_LEN)
-      blank_inititals = Repeat(' ', INITIALS_LEN)
-
       Stud_Amount = count_of_students(Input_File)
       
-      allocate (Surnames(Stud_Amount), source = blank_surname)
-      allocate (Initials(Stud_Amount), source = blank_inititals)
-      allocate (Year(Stud_Amount), source=0)
+      allocate (Surnames(Stud_Amount))
+      allocate (Initials(Stud_Amount))
+      allocate (Year(Stud_Amount))
 
       open (file=Input_File, encoding=E_, newunit=In)
-         read (In, S_FORMAT, iostat=IO) (Surnames(i)(1:FILE_SURNAME_LEN),  &
-                                         Initials(i)(1:FILE_INITIALS_LEN), &
+         read (In, S_FORMAT, iostat=IO) (Surnames(i), Initials(i), &
                                          Year(i), i = 1, Stud_Amount)
       close (In)
   
@@ -68,8 +61,7 @@ contains
 
       open  (file=Output_File, encoding=E_, newunit=Out)
          write (Out, '(/a)') Message   
-         write (Out, S_FORMAT, iostat=IO) (Surnames(i)(1:FILE_SURNAME_LEN), &
-                                           Initials(i)(1:FILE_INITIALS_LEN), &
+         write (Out, S_FORMAT, iostat=IO) (Surnames(i), Initials(i), &
                                            Year(i), i = 1, size(Year))
       close (Out)
 
@@ -87,8 +79,7 @@ contains
 
       open (file=Output_File, encoding=E_, newunit=Out, position='append')
          write (Out, '(/a)') Message  
-         write (Out, S_FORMAT, iostat=IO) Surnames(Stud_ind)(1:FILE_SURNAME_LEN), &
-                                          Initials(Stud_ind)(1:FILE_INITIALS_LEN), &
+         write (Out, S_FORMAT, iostat=IO) Surnames(Stud_ind), Initials(Stud_ind), &
                                           Year(Stud_ind)
       close (Out)
 

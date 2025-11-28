@@ -46,7 +46,7 @@ contains
          print *, "Запустился поток для фамилий:", id, "L:", Lind, "R:", Rind
           
          ! Параллельный цикл
-         !$OMP SIMD aligned(Surnames, Initials : 16)
+         !$OMP DO
          do i = Lind + 1, Rind
             if (Surnames(i) < Surnames(loc_min)) then
                loc_min = i
@@ -56,7 +56,7 @@ contains
                endif
             endif
          end do
-         !$OMP END SIMD
+         !$OMP END DO
 
          !$OMP CRITICAL
             if (Surnames(loc_min) < Surnames(first_ind)) then
@@ -107,13 +107,13 @@ contains
          print * , "Запустился поток для года:", id, "L:", Lind, "R:", Rind
          
          ! Параллельный цикл
-         !$OMP SIMD aligned(Year : 16)
+         !$OMP DO
          do i = Lind+1, Rind
             if (Year(i) < Year(i_min)) then
                i_min = i
             end if
          end do
-         !$OMP END SIMD
+         !$OMP END DO
 
          !$OMP critical
             if (Year(i_min) < Year(younger_ind)) then
