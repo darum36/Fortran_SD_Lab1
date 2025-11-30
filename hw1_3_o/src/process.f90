@@ -10,7 +10,7 @@ contains
 
    function find_first_by_alphabet(Group) result(first_ind)
    
-      type(student), intent(in), allocatable :: Group(:)
+      type(student), intent(in) :: Group(:)
       integer                   :: first_ind
 
       integer                   :: i, id, n, local_min_index, &
@@ -37,7 +37,7 @@ contains
 
          local_min_index = Lind
          
-         !$OMP SIMD aligned(Group : 16)
+         !$OMP DO
          do i = Lind + 1, Rind
             if (Group(i)%Surname < Group(local_min_index)%Surname) then
                local_min_index = i
@@ -47,7 +47,7 @@ contains
                endif
             endif
          end do
-         !$OMP END SIMD
+         !$OMP END DO
           
          !$OMP CRITICAL
          if (Group(local_min_index)%Surname < Group(first_ind)%Surname) then
@@ -65,12 +65,12 @@ contains
 
    function find_younger(Group) result(younger_ind)
 
-      type(student), intent(in), allocatable :: Group(:)
-      integer                                :: younger_ind
+      type(student), intent(in) :: Group(:)
+      integer                   :: younger_ind
 
-      integer             :: i, id, i_min, n, &
-                             num_threads, Lind, Rind, &
-                             data_delimeter
+      integer                   :: i, id, i_min, n, &
+                                   num_threads, Lind, Rind, &
+                                   data_delimeter
 
       n = size(Group)
       younger_ind = 1
@@ -93,13 +93,13 @@ contains
 
          i_min = Lind
          
-         !$OMP SIMD aligned(Group : 16) 
+         !$OMP DO 
          do i = Lind+1, Rind
             if (Group(i)%Year < Group(i_min)%Year) then
                i_min = i
             end if
          end do
-         !$OMP END SIMD
+         !$OMP END DO
 
          !$OMP critical
             if (Group(i_min)%Year < Group(younger_ind)%Year) then

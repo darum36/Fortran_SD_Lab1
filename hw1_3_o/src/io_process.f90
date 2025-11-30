@@ -41,8 +41,7 @@ contains
               newunit=Out, access='direct', recl=RECL)
 
             do i = 1, Stud_Amount
-               read  (In, S_FORMAT, iostat=IO) Stud%Surname(1:FILE_SURNAME_LEN),   &
-                                               Stud%Initials(1:FILE_INITIALS_LEN), & 
+               read  (In, S_FORMAT, iostat=IO) Stud%Surname, Stud%Initials, & 
                                                Stud%Year
                write (Out, iostat=IO, rec=i)   Stud
             end do
@@ -81,11 +80,8 @@ contains
 
       open  (file=Output_File, encoding=E_, newunit=Out)
       write (Out, '(/a)') Message   
-         do i = 1, size(Group)
-            write (Out, S_FORMAT, iostat=IO) Group(i)%Surname(1:FILE_SURNAME_LEN),   &
-                                             Group(i)%Initials(1:FILE_INITIALS_LEN), &
-                                             Group(i)%Year
-         end do
+      write (Out, S_FORMAT, iostat=IO) (Group(i)%Surname, Group(i)%Initials, &
+                                              Group(i)%Year, i = 1, Size(Group)) 
       close (Out)
 
    end subroutine write_student_list
@@ -100,8 +96,7 @@ contains
 
       open (file=Output_File, encoding=E_, newunit=Out, position='append')
          write (Out, '(/a)') Message
-         write (Out, S_FORMAT, iostat=IO) Stud%Surname(1:FILE_SURNAME_LEN),   &
-                                          Stud%Initials(1:FILE_INITIALS_LEN), &
+         write (Out, S_FORMAT, iostat=IO) Stud%Surname, Stud%Initials, &
                                           Stud%Year
       close (Out)
 
