@@ -39,8 +39,8 @@ contains
 
       open(file=Input_File, encoding=E_, newunit=In) 
          do i = 1, Stud_Amount
-            read(In, S_FORMAT, iostat=IO) Group_t%Surname(i)(1:FILE_SURNAME_LEN),   &
-                                          Group_t%Initials(i)(1:FILE_INITIALS_LEN), &
+            read(In, S_FORMAT, iostat=IO) Group_t%Surname(i),  &
+                                          Group_t%Initials(i), &
                                           Group_t%Year(i)
          end do
       close (In)
@@ -89,8 +89,8 @@ contains
       open  (file=Output_File, encoding=E_, newunit=Out)
          write (Out, '(/a)') Message   
          do i = 1, size(Group%Year)
-            write (Out, S_FORMAT, iostat=IO) Group%Surname(i)(1:FILE_SURNAME_LEN),   &
-                                             Group%Initials(i)(1:FILE_INITIALS_LEN), &
+            write (Out, S_FORMAT, iostat=IO) Group%Surname(i),  &
+                                             Group%Initials(i), &
                                              Group%Year(i)
          end do
       close (Out)
@@ -108,8 +108,8 @@ contains
       
       open (file=Output_File, encoding=E_, newunit=Out, position='append')
          write (Out, '(/a)') Message
-         write (Out, S_FORMAT, iostat=IO) Group%Surname(Stud_ind)(1:FILE_SURNAME_LEN),  &
-                                          Group%Initials(Stud_ind)(1:FILE_INITIALS_LEN), &
+         write (Out, S_FORMAT, iostat=IO) Group%Surname(Stud_ind),  &
+                                          Group%Initials(Stud_ind), &
                                           Group%Year(Stud_ind)
       close (Out)
 
