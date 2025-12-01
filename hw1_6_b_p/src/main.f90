@@ -1,4 +1,4 @@
-program hw1_6_b_b
+program hw1_6_b_p
 
    use Environment
    use Config
@@ -26,4 +26,4 @@ program hw1_6_b_b
                          "Cамый молодой в списке:")
    endif
 
-end program hw1_6_b_b
+end program hw1_6_b_p
