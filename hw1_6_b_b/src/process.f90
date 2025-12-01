@@ -9,23 +9,23 @@ contains
 
    recursive function Find_First_Recursive(Current_First, Stud_To_Check) result(First)
            
-         type(student), allocatable, intent(in) :: Current_First, Stud_To_Check
+         type(student), pointer, intent(in) :: Current_First, Stud_To_Check
          
-         type(student), allocatable             :: First
+         type(student), pointer             :: First
         
          if (Allocated(Stud_To_Check)) then
 
            if (Current_First%Surname > Stud_To_Check%Surname) then
-              First = Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
+              First => Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
            else if (Current_First%Surname == Stud_To_Check%Surname) then
               if (Current_First%Initial > Stud_To_Check%Initial) then
-                  First = Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
+                  First => Find_First_Recursive(Stud_To_Check, Stud_To_Check%next)
               endif
            else
-              First = Find_First_Recursive(Current_First, Stud_To_Check%next)
+              First => Find_First_Recursive(Current_First, Stud_To_Check%next)
            endif
          else
-            First = Current_First 
+            First => Current_First 
          endif
         
    end function Find_First_Recursive

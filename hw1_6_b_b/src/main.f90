@@ -7,9 +7,9 @@ program hw1_6_b_opt
    
    implicit none
 
-   type(student), allocatable :: Group          
-   type(student), allocatable :: FBA          
-   type(student), allocatable :: Young          
+   type(student), allocatable, target  :: Group          
+   type(student),              pointer :: FBA          
+   type(student),              pointer :: Young          
 
    Group = Read_class(IN_FILE)
 
@@ -17,11 +17,11 @@ program hw1_6_b_opt
 
       call Write_Class(OUT_FILE, Group, "Исходный список:")
 
-      FBA = Find_First_Recursive(Group, Group%next)
+      FBA => Find_First_Recursive(Group, Group%next)
       call Write_Student(OUT_FILE, FBA, &
                           "Первый по алфавиту в списке:")
       
-      Young = Find_Youngest_Recursive(Group, Group%next) 
+      Young => Find_Youngest_Recursive(Group, Group%next) 
       call Write_Student(OUT_FILE, Young, &
                          "Cамый молодой в списке:")
    endif
