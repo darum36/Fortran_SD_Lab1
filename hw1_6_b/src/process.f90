@@ -30,25 +30,22 @@ contains
         
    end function Find_First_Recursive
 
-
-   !----------------------------------------------------------------------------!
-
-      recursive function Find_Youngest_Recursive(Current_Young, Stud_To_Check) result(Youngest)
-          
-         type(student), allocatable, intent(in) :: Current_Young, Stud_To_Check
-         
-         type(student), allocatable             :: Youngest
-        
-         if (Allocated(Stud_To_Check)) then
-           if (Current_Young%Year > Stud_To_Check%Year) then
-              Youngest = Find_Youngest_Recursive(Stud_To_Check, Stud_To_Check%next)
-           else 
-              Youngest = Find_Youngest_Recursive(Current_Young, Stud_To_Check%next)
-           endif
-         else
-              Youngest = Current_Young
-         endif
+   recursive function Find_Youngest_Recursive(Current_Young, Stud_To_Check) result(Youngest)
+       
+      type(student), allocatable, intent(in) :: Current_Young, Stud_To_Check
+      
+      type(student), allocatable             :: Youngest
+     
+      if (Allocated(Stud_To_Check)) then
+        if (Current_Young%Year > Stud_To_Check%Year) then
+           Youngest = Find_Youngest_Recursive(Stud_To_Check, Stud_To_Check%next)
+        else 
+           Youngest = Find_Youngest_Recursive(Current_Young, Stud_To_Check%next)
+        endif
+      else
+           Youngest = Current_Young
+      endif
   
-      end function Find_Youngest_Recursive
+   end function Find_Youngest_Recursive
 
 end module Process   
